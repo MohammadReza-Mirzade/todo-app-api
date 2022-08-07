@@ -5,6 +5,10 @@ module.exports = (seqelize, Sequelize) => {
     },
     body: {
       type: Sequelize.TEXT
+    },
+    isDone: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false,
     }
   });
 }

@@ -93,3 +93,43 @@ exports.delete = async (req, res, next) => {
     return next(createError(500, e));
   }
 };
+
+exports.setDone = async (req, res, next) => {
+  try {
+    const { taskId } = req.params;
+    if (!+taskId) return next(createError(400));
+    const task = await Task.findOne({where: {id: taskId}});
+    if (!task || task.userId !== req.userId) return next(createError(404, 'Task didn\'t found.'));
+    await Task.update({
+      isDone: true,
+    }, {
+      where: {
+        id: +taskId,
+      }
+    });
+    const newTask = await Task.findOne({where: {id: taskId}});
+    return res.send({task: newTask});
+  } catch (e) {
+    return next(createError(500, e));
+  }
+};
+
+exports.setTodo = async (req, res, next) => {
+  try {
+    const { taskId } = req.params;
+    if (!+taskId) return next(createError(400));
+    const task = await Task.findOne({where: {id: taskId}});
+    if (!task || task.userId !== req.userId) return next(createError(404, 'Task didn\'t found.'));
+    await Task.update({
+      isDone: false,
+    }, {
+      where: {
+        id: +taskId,
+      }
+    });
+    const newTask = await Task.findOne({where: {id: taskId}});
+    return res.send({task: newTask});
+  } catch (e) {
+    return next(createError(500, e));
+  }
+}
